@@ -35,7 +35,7 @@ double realElapsedTime = clock.getRealElapsedTime();
 
 ## LoadBalancer 
 `LoadBalancer` is a C++ class designed to efficiently distribute tasks across multiple servers by tracking their utilization and assigning tasks to the least utilized server. It logs task assignments to a file for auditing and monitoring purposes. 
-## Features 
+### Features 
 - **Track Server Utilization**: Keeps track of each server's utilization. 
 - **Task Queue**: Maintains a queue of tasks to be processed. 
 - **Task Assignment**: Sends tasks to the server with the lowest utilization. 
@@ -65,3 +65,48 @@ Check if there are any pending tasks in the queue.
 ```cpp
 bool pending = lb.hasPendingTasks();
 ```
+
+## Analyzer
+The `Analyzer` module provides a set of helper functions and an analyzer function to process server log files , task generator log file and calculate performance metrics such as average delay time, average waiting time, and average queue length.
+
+### analyzer
+Analyzes server log files and the task generator log file to calculate and save performance metrics.
+
+- **Parameters:**
+  - `serverLogFiles`: A vector containing paths to server log files.
+  - `taskGeneratorLogFile`: Path to the task generator log file.
+
+### Usage
+To use the `Analyzer` module, include the header file in your project and call the `analyzer` function with appropriate arguments.
+
+```cpp
+#include "Analyzer.h"
+
+int main() {
+    vector<string> serverLogs = {"server1.log", "server2.log"};
+    string taskGenLog = "taskGenerator.log";
+
+    analyzer(serverLogs, taskGenLog);
+
+    return 0;
+}
+```
+#### Example
+Below are examples of server log, task generator log, and analysis results:
+#### Server Log
+```txt
+Task ID: 1 Task Finished Time: 3.09
+Task ID: 2 Task Finished Time: 18.44
+Average Waiting Time: 4.2
+Average Queue Length: 5
+```
+#### Task Generator Log
+```txt
+[Time: 0.90] Task ID: 1, Service Time: 2.19 seconds
+[Time: 1.80] Task ID: 2, Service Time: 14.64 seconds
+```
+#### Analysis Results
+```txt
+Server ID: 0, Average Delay time: 9.415, Average Waiting time: 4.2, Average Queue length: 5
+```
+
