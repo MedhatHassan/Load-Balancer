@@ -1,0 +1,4 @@
+Task ID: 1 Task Finished Time: 3.09
+Task ID: 2 Task Finished Time: 18.44
+Average Waiting Time: 4.2
+Average Queue Length: 5

@@ -1,0 +1,1 @@
+Server ID: 0, Average Delay time: 9.415, Average Waiting time: 4.2, Average Queue length: 5Server ID: 0, Average Delay time: 9.415, Average Waiting time: 4.2, Average Queue length: 5

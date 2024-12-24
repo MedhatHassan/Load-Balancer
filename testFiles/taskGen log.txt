@@ -1,0 +1,2 @@
+[Time: 0.90] Task ID: 1, Service Time: 2.19 seconds
+[Time: 1.80] Task ID: 2, Service Time: 14.64 seconds
