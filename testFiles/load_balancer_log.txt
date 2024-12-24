@@ -1,0 +1,4 @@
+Task ID: 101, Assigned to Server: 2, Server Current Utilization: 0.4
+Task ID: 102, Assigned to Server: 2, Server Current Utilization: 0.5
+Task ID: 103, Assigned to Server: 1, Server Current Utilization: 0.6
+Task ID: 104, Assigned to Server: 2, Server Current Utilization: 0.6
