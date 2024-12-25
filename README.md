@@ -109,4 +109,236 @@ Average Queue Length: 5
 ```txt
 Server ID: 0, Average Delay time: 9.415, Average Waiting time: 4.2, Average Queue length: 5
 ```
+Here’s a **ServerQueue** documentation similar in style to the LoadBalancer example in your README:
+
+---
+
+# ServerQueue
+
+`ServerQueue` is a C++ class that simulates a server with a fixed processing power and queue size. It processes tasks in parallel and maintains performance metrics like average wait time and queue occupancy. The server integrates with a global clock for time synchronization and supports utilization reporting for efficient task distribution.
+
+## Features
+
+- **Task Queue Management**: Handles tasks with a fixed queue size.
+- **Parallel Processing**: Processes tasks in a separate thread for asynchronous operations.
+- **Performance Metrics**: Calculates average wait time and average queue occupancy.
+- **Utilization Reporting**: Reports server utilization for integration with load balancers.
+- **Logging**: Logs task details and performance metrics to a file and terminal.
+
+---
+
+## Usage
+
+### Creating an Instance
+
+Instantiate the `ServerQueue` with a unique server ID, processing power, queue size, and a global clock.
+
+```cpp
+#include "Clock.h"
+#include "SERVERQUEUE.h"
+
+// Example usage
+Clock globalClock;
+
+ServerQueue serverQueue1(
+    1,               // Server ID
+    50.0,            // Processing power (1-100)
+    20,              // Fixed queue size
+    &globalClock,    // Pointer to the global clock
+    [](std::pair<int, double> utilizationData) {
+        // Utilization callback logic
+    });
+```
+
+### Adding Tasks
+
+Add tasks to the server queue using the `addTask` method.
+
+```cpp
+serverQueue1.addTask(1, 2.0); // Task ID 1, Service Time 2.0 seconds
+```
+
+### Processing Tasks
+
+Tasks are processed automatically in a separate thread. Ensure the global clock is active for time synchronization.
+
+---
+
+### Calculating Metrics
+
+#### Average Wait Time
+
+Calculate the average time tasks waited in the queue before processing.
+
+```cpp
+serverQueue1.calculateAverageWaitTime();
+```
+
+#### Average Queue Occupancy
+
+Calculate the average queue size during the simulation.
+
+```cpp
+serverQueue1.calculateAverageQueueOccupancy();
+```
+
+---
+
+### Stopping Processing
+
+Stop the server's task processing thread safely.
+
+```cpp
+serverQueue1.stopProcessing();
+```
+
+---
+
+### Example
+
+```cpp
+#include "Clock.h"
+#include "SERVERQUEUE.h"
+
+int main() {
+    Clock globalClock;
+    ServerQueue serverQueue1(1, 50.0, 20, &globalClock, [](std::pair<int, double> utilizationData) {
+        int serverID = utilizationData.first;
+        double utilization = utilizationData.second;
+        std::cout << "Server " << serverID << " utilization: " << utilization * 100 << "%" << std::endl;
+    });
+
+    serverQueue1.addTask(1, 3.0); // Add task with 3 seconds service time
+    serverQueue1.addTask(2, 1.5); // Add another task
+
+    std::this_thread::sleep_for(std::chrono::seconds(10)); // Let the server process tasks
+
+    serverQueue1.calculateAverageWaitTime();
+    serverQueue1.calculateAverageQueueOccupancy();
+
+    serverQueue1.stopProcessing(); // Stop processing
+    return 0;
+}
+```
+
+---
+
+### Logging and Utilization Reporting
+
+Logs task details, queue updates, and performance metrics to the terminal and a file (`server<ID>_log.txt`).
+
+Utilization reporting is achieved via a callback function:
+
+```cpp
+[](std::pair<int, double> utilizationData) {
+    int serverID = utilizationData.first;
+    double utilization = utilizationData.second;
+    std::cout << "Server " << serverID << " utilization: " << utilization * 100 << "%" << std::endl;
+}
+```
+Below is an example of how the output could look based on your `SERVERQUEUE.h` implementation and the provided usage code. 
+
+### Example Output
+
+#### Real-time Logs:
+```plaintext
+Server 1 added task 1 with service time: 2.0 at time: 0.0 secs.
+Server 1 current task queue size: 0
+Server 1 is processing task 1 with service time: 2.0 seconds, waited: 0.0 seconds at time: 0.0 secs.
+Server 1 utilization updated: 10.0%.
+TaskID: 1 Task Finished Time: 2.0 secs.
+
+Server 2 added task 2 with service time: 3.0 at time: 0.0 secs.
+Server 2 current task queue size: 0
+Server 2 is processing task 2 with service time: 3.0 seconds, waited: 0.0 seconds at time: 0.0 secs.
+Server 2 utilization updated: 12.0%.
+TaskID: 2 Task Finished Time: 3.0 secs.
+
+Server 3 added task 3 with service time: 1.5 at time: 0.0 secs.
+Server 3 current task queue size: 0
+Server 3 is processing task 3 with service time: 1.5 seconds, waited: 0.0 seconds at time: 0.0 secs.
+Server 3 utilization updated: 15.0%.
+TaskID: 3 Task Finished Time: 1.5 secs.
+
+Server 1 added task 4 with service time: 4.0 at time: 2.0 secs.
+Server 1 current task queue size: 0
+Server 1 is processing task 4 with service time: 4.0 seconds, waited: 0.0 seconds at time: 2.0 secs.
+Server 1 utilization updated: 20.0%.
+TaskID: 4 Task Finished Time: 6.0 secs.
+
+Server 2 added task 5 with service time: 6.0 at time: 3.0 secs.
+Server 2 current task queue size: 0
+Server 2 is processing task 5 with service time: 6.0 seconds, waited: 0.0 seconds at time: 3.0 secs.
+Server 2 utilization updated: 24.0%.
+TaskID: 5 Task Finished Time: 9.0 secs.
+
+Server 3 added task 6 with service time: 8.5 at time: 1.5 secs.
+Server 3 current task queue size: 0
+Server 3 is processing task 6 with service time: 8.5 seconds, waited: 0.0 seconds at time: 1.5 secs.
+Server 3 utilization updated: 28.33%.
+TaskID: 6 Task Finished Time: 10.0 secs.
+```
+
+#### Statistics:
+```plaintext
+Server 1 Average Waiting Time: 0.0 seconds.
+Server 1 Average Queue Length: 0 tasks.
+
+Server 2 Average Waiting Time: 0.0 seconds.
+Server 2 Average Queue Length: 0 tasks.
+
+Server 3 Average Waiting Time: 0.0 seconds.
+Server 3 Average Queue Length: 0 tasks.
+```
+
+#### Log Files:
+- **server1_log.txt**:
+```plaintext
+Server 1 added task 1 with service time: 2.0 at time: 0.0 secs.
+Server 1 current task queue size: 0
+Server 1 is processing task 1 with service time: 2.0 seconds, waited: 0.0 seconds at time: 0.0 secs.
+TaskID: 1 Task Finished Time: 2.0 secs.
+
+Server 1 added task 4 with service time: 4.0 at time: 2.0 secs.
+Server 1 current task queue size: 0
+Server 1 is processing task 4 with service time: 4.0 seconds, waited: 0.0 seconds at time: 2.0 secs.
+TaskID: 4 Task Finished Time: 6.0 secs.
+
+Server 1 Average Waiting Time: 0.0 seconds.
+Server 1 Average Queue Length: 0 tasks.
+```
+
+- **server2_log.txt**:
+```plaintext
+Server 2 added task 2 with service time: 3.0 at time: 0.0 secs.
+Server 2 current task queue size: 0
+Server 2 is processing task 2 with service time: 3.0 seconds, waited: 0.0 seconds at time: 0.0 secs.
+TaskID: 2 Task Finished Time: 3.0 secs.
+
+Server 2 added task 5 with service time: 6.0 at time: 3.0 secs.
+Server 2 current task queue size: 0
+Server 2 is processing task 5 with service time: 6.0 seconds, waited: 0.0 seconds at time: 3.0 secs.
+TaskID: 5 Task Finished Time: 9.0 secs.
+
+Server 2 Average Waiting Time: 0.0 seconds.
+Server 2 Average Queue Length: 0 tasks.
+```
+
+- **server3_log.txt**:
+```plaintext
+Server 3 added task 3 with service time: 1.5 at time: 0.0 secs.
+Server 3 current task queue size: 0
+Server 3 is processing task 3 with service time: 1.5 seconds, waited: 0.0 seconds at time: 0.0 secs.
+TaskID: 3 Task Finished Time: 1.5 secs.
+
+Server 3 added task 6 with service time: 8.5 at time: 1.5 secs.
+Server 3 current task queue size: 0
+Server 3 is processing task 6 with service time: 8.5 seconds, waited: 0.0 seconds at time: 1.5 secs.
+TaskID: 6 Task Finished Time: 10.0 secs.
+
+Server 3 Average Waiting Time: 0.0 seconds.
+Server 3 Average Queue Length: 0 tasks.
+```
+
+This output illustrates how tasks are processed, logged, and analyzed in the system. Adjustments can be made to display or log more detailed metrics as needed.
 
