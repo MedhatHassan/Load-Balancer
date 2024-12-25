@@ -327,6 +327,3 @@ Below is a sample output from the log file:
 [Time: 1.80] Task ID: 2, Service Time: 14.64 seconds
 [Time: 2.70] Task ID: 3, Service Time: 5.32 seconds
 ```
-
-
-
