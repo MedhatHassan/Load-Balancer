@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 # Read and parse the results file
 results = {}
-with open("plot_test.txt", "r") as file:
+with open("testFiles/plot_test.txt", "r") as file:
     for line in file:
         parts = line.split(", ")
         server_id = int(parts[0].split(": ")[1])
@@ -20,9 +20,9 @@ avg_queue_lengths = [results[i][2] for i in server_ids]
 
 # Plotting
 x = range(len(server_ids))
-plt.bar(x, avg_delays, width=0.3, label="Avg Delay")
-plt.bar([p + 0.3 for p in x], avg_waitings, width=0.3, label="Avg Waiting")
-plt.bar([p + 0.6 for p in x], avg_queue_lengths, width=0.3, label="Avg Queue Length")
+plt.bar(x, avg_delays, width=0.3, color='red', label="Avg Delay")  # Red for Avg Delay
+plt.bar([p + 0.3 for p in x], avg_waitings, width=0.3, color='orange', label="Avg Waiting")  # Orange for Avg Waiting
+plt.bar([p + 0.6 for p in x], avg_queue_lengths, width=0.3, color='green', label="Avg Queue Length")  # Green for Avg Queue
 
 plt.xlabel("Server ID")
 plt.ylabel("Metrics")
