@@ -1,5 +1,5 @@
 # Load-Balancer
-![FlowChart]("./Load Balancer Flowchart.png")
+![FlowChart](<Load Balancer Flowchart.png>)
 
 
 ## GlobalClock
