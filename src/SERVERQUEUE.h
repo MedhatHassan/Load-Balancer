@@ -12,7 +12,7 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
-#include "Clock.h"
+#include "GlobalClock.h"
 
 class ServerQueue {
 private:
@@ -27,7 +27,7 @@ private:
     double processingPower;
     int fixedQueueSize;
     std::queue<Task> taskQueue;
-    Clock* globalClock;
+    GlobalClock* globalClock;
     std::mutex queueMutex;
     std::condition_variable taskNotifier;
     std::atomic<bool> isRunning;
@@ -91,7 +91,6 @@ private:
             double adjustedServiceTime = task.serviceTime / processingPower;
 
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(adjustedServiceTime * 1000)));
-            globalClock->advanceTime(adjustedServiceTime);
 
             task.finishTime = globalClock->getCurrentTime();
 
@@ -124,7 +123,15 @@ private:
     }
 
 public:
-    ServerQueue(int id, double power, int queueSize, Clock* clock, std::function<void(std::pair<int, double>)> utilizationCallback)
+    ServerQueue()
+        : serverID(1), processingPower(10), fixedQueueSize(20), globalClock(nullptr),
+        utilizationCallback(nullptr), isRunning(false), totalQueueSize(0), queueSizeUpdates(0) {
+
+        // Optional: Open a default log file
+        logFile.open("default_log.txt", std::ios::out | std::ios::app);
+    }
+
+    ServerQueue(int id, double power, int queueSize, GlobalClock* clock, std::function<void(std::pair<int, double>)> utilizationCallback)
         : serverID(id), globalClock(clock), utilizationCallback(utilizationCallback), isRunning(true),
           totalQueueSize(0), queueSizeUpdates(0), fixedQueueSize(queueSize) {
 

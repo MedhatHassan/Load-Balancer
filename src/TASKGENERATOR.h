@@ -1,6 +1,6 @@
 #ifndef TASK_GENERATOR_H
 #define TASK_GENERATOR_H
-
+#include <mutex>
 #include <map>
 #include <random>
 #include <ctime>
@@ -16,7 +16,7 @@
 class TaskGenerator {
 public:
     // Constructor to initialize the Task Generator with average service time
-    TaskGenerator(double averageServiceTime, std::string logFilePath, std::atomic<double>* globalClock)
+    TaskGenerator(double averageServiceTime, std::string logFilePath, GlobalClock* globalClock)
         : rng(std::random_device{}()), 
           serviceTimeDist(1.0 / averageServiceTime),
           currentTaskID(0), 
@@ -74,6 +74,7 @@ public:
     }
 
 private:
+
     // Helper function to generate and log a task
 std::pair<int, double> generateAndLogTask() {
     currentTaskID++;
@@ -94,7 +95,7 @@ double generateExponential(double mean) {
     void logTask(int taskID, double serviceTime) {
         if (globalClock) {
             logFile << std::fixed << std::setprecision(2);
-            logFile << "[Time: " << globalClock->load() << "] Task ID: " << taskID 
+            logFile << "[Time: " << globalClock->getCurrentTime() << "] Task ID: " << taskID 
                     << ", Service Time: " << serviceTime << " seconds\n";
         }
     }
@@ -103,7 +104,7 @@ double generateExponential(double mean) {
     std::exponential_distribution<double> serviceTimeDist; // Exponential distribution for service time
     int currentTaskID; // Counter for unique task IDs
     std::ofstream logFile; // Log file stream
-    std::atomic<double>* globalClock; // Pointer to global clock
+    GlobalClock* globalClock; // Pointer to global clock
     std::atomic<bool> stopThread; // Flag to stop the thread
     std::thread generatorThread; // Thread for generating tasks
     std::pair<int, double> lastGeneratedTask; // Last generated task
