@@ -340,5 +340,135 @@ Server 3 Average Waiting Time: 0.0 seconds.
 Server 3 Average Queue Length: 0 tasks.
 ```
 
-This output illustrates how tasks are processed, logged, and analyzed in the system. Adjustments can be made to display or log more detailed metrics as needed.
+# TaskGenerator
+
+TaskGenerator is a C++ class designed to generate tasks with random service times following an exponential distribution. It can operate in a separate thread to provide parallel execution and supports logging task details with timestamps.
+
+## Features
+
+- **Exponential Distribution**: Service times are generated using an exponential distribution with a configurable mean.
+- **Threaded Operation**: Runs in a separate thread to generate tasks periodically.
+- **Task Logging**: Logs task details, including service time and timestamp, to a file.
+- **Global Clock Integration**: Synchronizes task timestamps with a global clock.
+- **Callback Mechanism**: Supports sending generated tasks to a callback function for further processing.
+
+## Usage
+
+### Creating an Instance
+
+Instantiate the TaskGenerator with the average service time, log file path, and a pointer to the global clock.
+
+```cpp
+#include "TaskGenerator.h"
+
+std::atomic<double> globalClock(0.0);
+TaskGenerator taskGen(42.0, "task_log.txt", &globalClock);
+```
+
+### Starting Task Generation
+
+Start the task generator with a specified inter-arrival time (in seconds) and a callback function to handle generated tasks.
+
+```cpp
+taskGen.start(1.0, [](std::pair<int, double> task) {
+    std::cout << "Generated Task ID: " << task.first
+              << ", Service Time: " << task.second << " seconds" << std::endl;
+});
+```
+
+### Stopping Task Generation
+
+Stop the task generator thread when tasks are no longer needed.
+
+```cpp
+taskGen.stop();
+```
+
+### Generating a Single Task
+
+Manually generate a single task using the `generateTask` method.
+
+```cpp
+std::pair<int, double> task = taskGen.generateTask();
+std::cout << "Generated Task ID: " << task.first
+          << ", Service Time: " << task.second << " seconds" << std::endl;
+```
+
+### Accessing the Last Generated Task
+
+Retrieve the last generated task using the `getLastGeneratedTask` method.
+
+```cpp
+std::pair<int, double> lastTask = taskGen.getLastGeneratedTask();
+```
+
+## Example
+
+Below is a complete example demonstrating the integration of TaskGenerator with a LoadBalancer:
+
+```cpp
+#include <iostream>
+#include <queue>
+#include <atomic>
+#include <thread>
+#include <chrono>
+#include "TaskGenerator.h"
+
+std::atomic<double> globalClock(0.0);
+
+void globalClockFunction() {
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        globalClock += 0.1;
+    }
+}
+
+class LoadBalancer {
+public:
+    void addTask(const std::pair<int, double>& task) {
+        taskQueue.push(task);
+        std::cout << "Task added to LoadBalancer - ID: " << task.first
+                  << ", Service Time: " << task.second << " seconds\n";
+    }
+
+private:
+    std::queue<std::pair<int, double>> taskQueue;
+};
+
+int main() {
+    std::thread clockThread(globalClockFunction);
+
+    LoadBalancer loadBalancer;
+    TaskGenerator taskGen(42.0, "task_log.txt", &globalClock);
+
+    taskGen.start(1.0, [&loadBalancer](std::pair<int, double> task) {
+        loadBalancer.addTask(task);
+    });
+
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+    taskGen.stop();
+    clockThread.detach();
+
+    return 0;
+}
+```
+
+## Example Output
+
+Below is a sample output from the log file:
+
+```
+[Time: 0.90] Task ID: 1, Service Time: 2.19 seconds
+[Time: 1.80] Task ID: 2, Service Time: 14.64 seconds
+[Time: 2.70] Task ID: 3, Service Time: 5.32 seconds
+```
+
+## Key Considerations
+
+- Ensure the global clock is running before starting the TaskGenerator.
+- Properly handle the lifecycle of threads to avoid resource leaks.
+- Use an appropriate inter-arrival time to match the desired task generation rate.
+- Always validate the log file path to prevent runtime errors.
+
+
 
