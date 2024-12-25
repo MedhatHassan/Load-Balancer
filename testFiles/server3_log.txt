@@ -1,0 +1,12 @@
+Server 3 added task 3 with service time: 1.500000 at time: 0.000000 secs.
+Server 3 current task queue size: 0
+Server 3 is processing task 3 with service time: 1.500000 seconds, waited: 0.000000 seconds at time: 0.000000 secs.
+Server 3 added task 6 with service time: 8.500000 at time: 0.000000 secs.
+TaskID: 3 Task Finished Time: 0.077500 secs.
+Server 3 utilization updated: 4.041667%.
+Server 3 current task queue size: 0
+Server 3 is processing task 6 with service time: 8.500000 seconds, waited: 0.077500 seconds at time: 0.077500 secs.
+TaskID: 6 Task Finished Time: 0.520000 secs.
+Server 3 utilization updated: 0.000000%.
+Server 3 Average Waiting Time: 0.038750 seconds.
+Server 3 Average Queue Length: 0 tasks.

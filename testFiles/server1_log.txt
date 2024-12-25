@@ -1,0 +1,12 @@
+Server 1 added task 1 with service time: 2.000000 at time: 0.000000 secs.
+Server 1 current task queue size: 0
+Server 1 is processing task 1 with service time: 2.000000 seconds, waited: 0.000000 seconds at time: 0.000000 secs.
+Server 1 added task 4 with service time: 4.000000 at time: 0.000000 secs.
+TaskID: 1 Task Finished Time: 0.040000 secs.
+Server 1 utilization updated: 2.700000%.
+Server 1 current task queue size: 0
+Server 1 is processing task 4 with service time: 4.000000 seconds, waited: 0.077500 seconds at time: 0.077500 secs.
+TaskID: 4 Task Finished Time: 0.207500 secs.
+Server 1 utilization updated: 0.000000%.
+Server 1 Average Waiting Time: 0.038750 seconds.
+Server 1 Average Queue Length: 0 tasks.
