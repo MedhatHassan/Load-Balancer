@@ -1,4 +1,6 @@
 # Load-Balancer
+![FlowChart & Mindmap](Load Balancer Flowchart&mindmap.png)
+
 
 ## GlobalClock
 
