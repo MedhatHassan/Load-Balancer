@@ -32,8 +32,8 @@ Get the real elapsed time since the simulation started.
 ```cpp
 double realElapsedTime = clock.getRealElapsedTime();
 ```
-
-## LoadBalancer 
+---
+## Load Balancer Server 
 `LoadBalancer` is a C++ class designed to efficiently distribute tasks across multiple servers by tracking their utilization and assigning tasks to the least utilized server. It logs task assignments to a file for auditing and monitoring purposes. 
 ### Features 
 - **Track Server Utilization**: Keeps track of each server's utilization. 
@@ -65,7 +65,7 @@ Check if there are any pending tasks in the queue.
 ```cpp
 bool pending = lb.hasPendingTasks();
 ```
-
+---
 ## Analyzer
 The `Analyzer` module provides a set of helper functions and an analyzer function to process server log files , task generator log file and calculate performance metrics such as average delay time, average waiting time, and average queue length.
 
@@ -109,15 +109,13 @@ Average Queue Length: 5
 ```txt
 Server ID: 0, Average Delay time: 9.415, Average Waiting time: 4.2, Average Queue length: 5
 ```
-Here’s a **ServerQueue** documentation similar in style to the LoadBalancer example in your README:
-
 ---
 
-# ServerQueue
+## Server
 
 `ServerQueue` is a C++ class that simulates a server with a fixed processing power and queue size. It processes tasks in parallel and maintains performance metrics like average wait time and queue occupancy. The server integrates with a global clock for time synchronization and supports utilization reporting for efficient task distribution.
 
-## Features
+### Features
 
 - **Task Queue Management**: Handles tasks with a fixed queue size.
 - **Parallel Processing**: Processes tasks in a separate thread for asynchronous operations.
@@ -127,9 +125,9 @@ Here’s a **ServerQueue** documentation similar in style to the LoadBalancer ex
 
 ---
 
-## Usage
+### Usage
 
-### Creating an Instance
+#### Creating an Instance
 
 Instantiate the `ServerQueue` with a unique server ID, processing power, queue size, and a global clock.
 
@@ -150,7 +148,7 @@ ServerQueue serverQueue1(
     });
 ```
 
-### Adding Tasks
+#### Adding Tasks
 
 Add tasks to the server queue using the `addTask` method.
 
@@ -158,15 +156,15 @@ Add tasks to the server queue using the `addTask` method.
 serverQueue1.addTask(1, 2.0); // Task ID 1, Service Time 2.0 seconds
 ```
 
-### Processing Tasks
+#### Processing Tasks
 
 Tasks are processed automatically in a separate thread. Ensure the global clock is active for time synchronization.
 
 ---
 
-### Calculating Metrics
+#### Calculating Metrics
 
-#### Average Wait Time
+##### Average Wait Time
 
 Calculate the average time tasks waited in the queue before processing.
 
@@ -174,7 +172,7 @@ Calculate the average time tasks waited in the queue before processing.
 serverQueue1.calculateAverageWaitTime();
 ```
 
-#### Average Queue Occupancy
+##### Average Queue Occupancy
 
 Calculate the average queue size during the simulation.
 
@@ -184,7 +182,7 @@ serverQueue1.calculateAverageQueueOccupancy();
 
 ---
 
-### Stopping Processing
+#### Stopping Processing
 
 Stop the server's task processing thread safely.
 
@@ -253,98 +251,13 @@ Server 2 current task queue size: 0
 Server 2 is processing task 2 with service time: 3.0 seconds, waited: 0.0 seconds at time: 0.0 secs.
 Server 2 utilization updated: 12.0%.
 TaskID: 2 Task Finished Time: 3.0 secs.
-
-Server 3 added task 3 with service time: 1.5 at time: 0.0 secs.
-Server 3 current task queue size: 0
-Server 3 is processing task 3 with service time: 1.5 seconds, waited: 0.0 seconds at time: 0.0 secs.
-Server 3 utilization updated: 15.0%.
-TaskID: 3 Task Finished Time: 1.5 secs.
-
-Server 1 added task 4 with service time: 4.0 at time: 2.0 secs.
-Server 1 current task queue size: 0
-Server 1 is processing task 4 with service time: 4.0 seconds, waited: 0.0 seconds at time: 2.0 secs.
-Server 1 utilization updated: 20.0%.
-TaskID: 4 Task Finished Time: 6.0 secs.
-
-Server 2 added task 5 with service time: 6.0 at time: 3.0 secs.
-Server 2 current task queue size: 0
-Server 2 is processing task 5 with service time: 6.0 seconds, waited: 0.0 seconds at time: 3.0 secs.
-Server 2 utilization updated: 24.0%.
-TaskID: 5 Task Finished Time: 9.0 secs.
-
-Server 3 added task 6 with service time: 8.5 at time: 1.5 secs.
-Server 3 current task queue size: 0
-Server 3 is processing task 6 with service time: 8.5 seconds, waited: 0.0 seconds at time: 1.5 secs.
-Server 3 utilization updated: 28.33%.
-TaskID: 6 Task Finished Time: 10.0 secs.
 ```
 
-#### Statistics:
-```plaintext
-Server 1 Average Waiting Time: 0.0 seconds.
-Server 1 Average Queue Length: 0 tasks.
+## TaskGenerator
 
-Server 2 Average Waiting Time: 0.0 seconds.
-Server 2 Average Queue Length: 0 tasks.
+`TaskGenerator` is a C++ class designed to generate tasks with random service times following an exponential distribution. It can operate in a separate thread to provide parallel execution and supports logging task details with timestamps.
 
-Server 3 Average Waiting Time: 0.0 seconds.
-Server 3 Average Queue Length: 0 tasks.
-```
-
-#### Log Files:
-- **server1_log.txt**:
-```plaintext
-Server 1 added task 1 with service time: 2.0 at time: 0.0 secs.
-Server 1 current task queue size: 0
-Server 1 is processing task 1 with service time: 2.0 seconds, waited: 0.0 seconds at time: 0.0 secs.
-TaskID: 1 Task Finished Time: 2.0 secs.
-
-Server 1 added task 4 with service time: 4.0 at time: 2.0 secs.
-Server 1 current task queue size: 0
-Server 1 is processing task 4 with service time: 4.0 seconds, waited: 0.0 seconds at time: 2.0 secs.
-TaskID: 4 Task Finished Time: 6.0 secs.
-
-Server 1 Average Waiting Time: 0.0 seconds.
-Server 1 Average Queue Length: 0 tasks.
-```
-
-- **server2_log.txt**:
-```plaintext
-Server 2 added task 2 with service time: 3.0 at time: 0.0 secs.
-Server 2 current task queue size: 0
-Server 2 is processing task 2 with service time: 3.0 seconds, waited: 0.0 seconds at time: 0.0 secs.
-TaskID: 2 Task Finished Time: 3.0 secs.
-
-Server 2 added task 5 with service time: 6.0 at time: 3.0 secs.
-Server 2 current task queue size: 0
-Server 2 is processing task 5 with service time: 6.0 seconds, waited: 0.0 seconds at time: 3.0 secs.
-TaskID: 5 Task Finished Time: 9.0 secs.
-
-Server 2 Average Waiting Time: 0.0 seconds.
-Server 2 Average Queue Length: 0 tasks.
-```
-
-- **server3_log.txt**:
-```plaintext
-Server 3 added task 3 with service time: 1.5 at time: 0.0 secs.
-Server 3 current task queue size: 0
-Server 3 is processing task 3 with service time: 1.5 seconds, waited: 0.0 seconds at time: 0.0 secs.
-TaskID: 3 Task Finished Time: 1.5 secs.
-
-Server 3 added task 6 with service time: 8.5 at time: 1.5 secs.
-Server 3 current task queue size: 0
-Server 3 is processing task 6 with service time: 8.5 seconds, waited: 0.0 seconds at time: 1.5 secs.
-TaskID: 6 Task Finished Time: 10.0 secs.
-
-Server 3 Average Waiting Time: 0.0 seconds.
-Server 3 Average Queue Length: 0 tasks.
-```
-
-# TaskGenerator
-
-TaskGenerator is a C++ class designed to generate tasks with random service times following an exponential distribution. It can operate in a separate thread to provide parallel execution and supports logging task details with timestamps.
-
-## Features
+### Features
 
 - **Exponential Distribution**: Service times are generated using an exponential distribution with a configurable mean.
 - **Threaded Operation**: Runs in a separate thread to generate tasks periodically.
@@ -352,9 +265,9 @@ TaskGenerator is a C++ class designed to generate tasks with random service time
 - **Global Clock Integration**: Synchronizes task timestamps with a global clock.
 - **Callback Mechanism**: Supports sending generated tasks to a callback function for further processing.
 
-## Usage
+### Usage
 
-### Creating an Instance
+#### Creating an Instance
 
 Instantiate the TaskGenerator with the average service time, log file path, and a pointer to the global clock.
 
@@ -365,7 +278,7 @@ std::atomic<double> globalClock(0.0);
 TaskGenerator taskGen(42.0, "task_log.txt", &globalClock);
 ```
 
-### Starting Task Generation
+#### Starting Task Generation
 
 Start the task generator with a specified inter-arrival time (in seconds) and a callback function to handle generated tasks.
 
@@ -376,7 +289,7 @@ taskGen.start(1.0, [](std::pair<int, double> task) {
 });
 ```
 
-### Stopping Task Generation
+#### Stopping Task Generation
 
 Stop the task generator thread when tasks are no longer needed.
 
@@ -384,7 +297,7 @@ Stop the task generator thread when tasks are no longer needed.
 taskGen.stop();
 ```
 
-### Generating a Single Task
+#### Generating a Single Task
 
 Manually generate a single task using the `generateTask` method.
 
@@ -394,7 +307,7 @@ std::cout << "Generated Task ID: " << task.first
           << ", Service Time: " << task.second << " seconds" << std::endl;
 ```
 
-### Accessing the Last Generated Task
+#### Accessing the Last Generated Task
 
 Retrieve the last generated task using the `getLastGeneratedTask` method.
 
@@ -402,58 +315,10 @@ Retrieve the last generated task using the `getLastGeneratedTask` method.
 std::pair<int, double> lastTask = taskGen.getLastGeneratedTask();
 ```
 
-## Example
+### Example
 
-Below is a complete example demonstrating the integration of TaskGenerator with a LoadBalancer:
 
-```cpp
-#include <iostream>
-#include <queue>
-#include <atomic>
-#include <thread>
-#include <chrono>
-#include "TaskGenerator.h"
-
-std::atomic<double> globalClock(0.0);
-
-void globalClockFunction() {
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        globalClock += 0.1;
-    }
-}
-
-class LoadBalancer {
-public:
-    void addTask(const std::pair<int, double>& task) {
-        taskQueue.push(task);
-        std::cout << "Task added to LoadBalancer - ID: " << task.first
-                  << ", Service Time: " << task.second << " seconds\n";
-    }
-
-private:
-    std::queue<std::pair<int, double>> taskQueue;
-};
-
-int main() {
-    std::thread clockThread(globalClockFunction);
-
-    LoadBalancer loadBalancer;
-    TaskGenerator taskGen(42.0, "task_log.txt", &globalClock);
-
-    taskGen.start(1.0, [&loadBalancer](std::pair<int, double> task) {
-        loadBalancer.addTask(task);
-    });
-
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    taskGen.stop();
-    clockThread.detach();
-
-    return 0;
-}
-```
-
-## Example Output
+#### Log file
 
 Below is a sample output from the log file:
 
@@ -462,13 +327,6 @@ Below is a sample output from the log file:
 [Time: 1.80] Task ID: 2, Service Time: 14.64 seconds
 [Time: 2.70] Task ID: 3, Service Time: 5.32 seconds
 ```
-
-## Key Considerations
-
-- Ensure the global clock is running before starting the TaskGenerator.
-- Properly handle the lifecycle of threads to avoid resource leaks.
-- Use an appropriate inter-arrival time to match the desired task generation rate.
-- Always validate the log file path to prevent runtime errors.
 
 
 
