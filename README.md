@@ -1,5 +1,5 @@
 # Load-Balancer
-![FlowChart](https://whimsical.com/embed/3P75XRHhiiUiXxT2VuDfpp)
+![FlowChart](./Load Balancer Flowchart.png)
 
 
 ## GlobalClock
