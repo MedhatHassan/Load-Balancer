@@ -8,7 +8,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    double speed = 100;
+    double speed = 3000;
     double averageServiceTime = 42.0;
 
     GlobalClock clock(speed);
@@ -26,18 +26,23 @@ int main(int argc, char const *argv[])
     
     LB.setServers(servers);
     
-    this_thread::sleep_for(chrono::milliseconds(1000));//for debugging 
-    
-    cout<<"currunt Time:"<<clock.getCurrentTime()<<endl;//for debugging 
-    double simulationDuration = 5;
-    while (clock.getCurrentTime() < simulationDuration) {
-        cout<<"currunt Time:"<<clock.getCurrentTime()<<endl;//for debugging 
-        TG.start(1.0, [&LB](std::pair<int, double> task) {
+    //this_thread::sleep_for(chrono::milliseconds(100));//for debugging 
+    TG.start(1.0, [&LB](std::pair<int, double> task) {
             Task tasklb = {task.first, task.second};
             LB.sendTask(tasklb);
         });
+    
+    //cout<<"currunt Time:"<<clock.getCurrentTime()<<endl;//for debugging 
+    double simulationDuration = 5*3600;
+    while (clock.getCurrentTime() < simulationDuration) {
+        //cout<<"2"<<endl;
+        //cout<<"currunt Time:"<<clock.getCurrentTime()<<endl;//for debugging 
+        
+        //cout<<"3"<<endl;
 
-        this_thread::sleep_for(chrono::milliseconds(1000));
+        this_thread::sleep_for(chrono::milliseconds(100));
+        //cout<<"4"<<endl;
+        
     }
 
     TG.stop();

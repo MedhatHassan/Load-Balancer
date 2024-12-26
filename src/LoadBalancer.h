@@ -71,8 +71,8 @@ public:
 
     	// Send task to the best available server
     	if (bestServer != -1) {
+            std::cout << "Task " << task.id << " sent to Server " << bestServer << std::endl;
         	servers[bestServer - 1]->addTask(task.id, task.time); 
-        	std::cout << "Task " << task.id << " sent to Server " << bestServer << std::endl;
         	logTask(task, bestServer);
         	taskQueue.pop();
     	}else {

@@ -98,6 +98,7 @@ private:
                 " Task Finished Time: " + std::to_string(task.finishTime) + " secs.");
 
             calculateQueueUtilization();
+
         }
     }
 
@@ -140,6 +141,7 @@ public:
         logFile.open("server" + std::to_string(serverID) + "_log.txt", std::ios::out | std::ios::app);
 
         processingThread = std::thread(&ServerQueue::processTasks, this);
+        calculateQueueUtilization();
     }
 
     ~ServerQueue() {
@@ -165,6 +167,9 @@ public:
                 " at time: " + std::to_string(arrivalTime) + " secs.");
 
             recordQueueSize();
+            log("Server " + std::to_string(serverID) + 
+                " current task queue size: " + std::to_string(taskQueue.size()));
+            calculateQueueUtilization();
         }
 
         taskNotifier.notify_one();
@@ -181,12 +186,14 @@ public:
     }
 
     void calculateAverageWaitTime() {
+        std::cout<<"heretime"<<endl;
         double averageWaitTime = (processedTasks > 0) ? totalWaitTime / processedTasks : 0.0;
         log("Server " + std::to_string(serverID) + 
             " Average Waiting Time: " + std::to_string(averageWaitTime) + " seconds.");
     }
 
     void calculateAverageQueueOccupancy() {
+        std::cout<<"herelength"<<endl;
         double averageOccupancy = (queueSizeUpdates > 0) ? static_cast<double>(totalQueueSize) / queueSizeUpdates : 0.0;
         int flooredOccupancy = static_cast<int>(std::floor(averageOccupancy));
         log("Server " + std::to_string(serverID) + 
