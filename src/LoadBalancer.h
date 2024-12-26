@@ -3,9 +3,11 @@
 
 #include <queue>
 #include <map>
+#include <vector>
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "SERVERQUEUE.h"  // Include the full definition of ServerQueue
 
 // Struct to represent a task
 struct Task {
@@ -13,11 +15,15 @@ struct Task {
     double time;
 };
 
-// LoadBalancer Class Definition
+// Forward Declaration
+class ServerQueue;  
+
+
 class LoadBalancer {
 private:
     std::queue<Task> taskQueue;
     std::map<int, double> serverUtilization;  // Server ID -> Utilization
+    std::vector<std::unique_ptr<ServerQueue>> servers; // Array of server instances
     std::ofstream logFile;
 
 public:
@@ -29,7 +35,7 @@ public:
         }
     }
 
-    // Destructor (Closes the log file when the LoadBalancer object is destroyed, preventing resource leaks)
+    // Destructor
     ~LoadBalancer() {
         if (logFile.is_open()) {
             logFile.close();
@@ -43,28 +49,37 @@ public:
 
     // Send task to the least utilized server
     void sendTask(const Task& task) {
-        taskQueue.push(task); // Add the task to the queue
-        
-        // Find the server with the lowest utilization
-        int bestServer = -1;
-        double minUtilization = 1e9;
+    	taskQueue.push(task);  // Add the task to the queue
 
-        for (const auto& [serverId, util] : serverUtilization) {
-            if (util < minUtilization) {
-                minUtilization = util;
-                bestServer = serverId;
-            }
-        }
+    // Find the server with the lowest utilization
+    	int bestServer = -1;
+    	double minUtilization = 1e9;
 
-        if (bestServer != -1) {
-            std::cout << "Task " << task.id << " sent to Server " << bestServer << std::endl;
-            trackUtil(bestServer, minUtilization + 0.1);  // Simulate load increase
-            logTask(task, bestServer);
-            taskQueue.pop();
-        } else {
+    	for (const auto& [serverId, util] : serverUtilization) {
+        	if (util < minUtilization) {
+            	minUtilization = util;
+            	bestServer = serverId;
+        	}
+    	}
+
+    	// Check if all servers are fully utilized
+    	if (minUtilization >= 1.0) {  // Assuming utilization is between 0.0 and 1.0 (100%)
+        	std::cerr << "All servers at maximum capacity. Task " 
+                  << task.id << " queued for later processing." << std::endl;
+        	return;
+    	}
+
+    	// Send task to the best available server
+    	if (bestServer != -1) {
+        	servers[bestServer - 1]->addTask(task.id, task.time); 
+        	std::cout << "Task " << task.id << " sent to Server " << bestServer << std::endl;
+        	logTask(task, bestServer);
+        	taskQueue.pop();
+    	}else {
             std::cerr << "No available servers to handle the task." << std::endl;
         }
-    }
+}
+
 
     // Log task to file
     void logTask(const Task& task, int serverId) {
@@ -80,6 +95,14 @@ public:
     bool hasPendingTasks() const {
         return !taskQueue.empty();
     }
+
+    // Set servers array
+    void setServers(std::vector<std::unique_ptr<ServerQueue>>& serverArray) {
+        servers.clear();
+        for (auto& server : serverArray) {
+            servers.push_back(std::move(server));
+    }
+}
 };
 
 #endif  // LOADBALANCER_H
