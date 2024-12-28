@@ -186,14 +186,12 @@ public:
     }
 
     void calculateAverageWaitTime() {
-        std::cout<<"heretime"<<endl;
         double averageWaitTime = (processedTasks > 0) ? totalWaitTime / processedTasks : 0.0;
         log("Server " + std::to_string(serverID) + 
             " Average Waiting Time: " + std::to_string(averageWaitTime) + " seconds.");
     }
 
     void calculateAverageQueueOccupancy() {
-        std::cout<<"herelength"<<endl;
         double averageOccupancy = (queueSizeUpdates > 0) ? static_cast<double>(totalQueueSize) / queueSizeUpdates : 0.0;
         int flooredOccupancy = static_cast<int>(std::floor(averageOccupancy));
         log("Server " + std::to_string(serverID) + 
