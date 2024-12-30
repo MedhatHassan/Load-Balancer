@@ -99,7 +99,7 @@ private:
 
             task.finishTime = globalClock->getCurrentTime();
 
-            log("TaskID: " + std::to_string(task.taskID) + 
+            log("Task ID: " + std::to_string(task.taskID) + 
                 " Task Finished Time: " + std::to_string(task.finishTime) + " secs.");
 
             calculateQueueUtilization();
