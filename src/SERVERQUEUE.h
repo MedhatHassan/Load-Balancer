@@ -90,7 +90,12 @@ private:
 
             double adjustedServiceTime = task.serviceTime / processingPower;
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(adjustedServiceTime * 1000)));
+            double startSimProcessingTime = globalClock->getCurrentTime();
+            double endSimProcessingTime = startSimProcessingTime + adjustedServiceTime;
+
+            while(globalClock->getCurrentTime() < endSimProcessingTime) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Small sleep to avoid busy waiting
+            }
 
             task.finishTime = globalClock->getCurrentTime();
 
